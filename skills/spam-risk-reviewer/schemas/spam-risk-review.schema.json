@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runx.spam_risk_review.result.v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "review",
+    "campaign",
+    "signals",
+    "policy_checks",
+    "required_fixes",
+    "validation",
+    "provenance"
+  ],
+  "properties": {
+    "schema": {
+      "const": "runx.spam_risk_review.result.v1"
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "verdict",
+        "risk_score",
+        "risk_level",
+        "confidence",
+        "summary"
+      ],
+      "properties": {
+        "case_id": {
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "allow",
+            "revise",
+            "block"
+          ]
+        },
+        "risk_score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "risk_level": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "summary": {
+          "type": "string"
+        }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "severity",
+          "score_delta",
+          "evidence"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,107 @@
+skill: spam-risk-reviewer
+version: "0.1.0"
+
+catalog:
+  kind: skill
+  audience: public
+  visibility: public
+  role: canonical
+  runtime_path: local
+
+policy:
+  allow:
+    - provider: local-fixture
+      method: READ
+      scope: runx:fixture:read
+    - provider: local-schema
+      method: READ
+      scope: runx:schema:read
+  deny:
+    - network_mutation
+    - credential_material
+    - private_user_data
+    - autonomous_messaging
+
+emits:
+  - name: spam_risk_review_result
+    packet: runx.spam_risk_review.result.v1
+
+harness:
+  cases:
+    - name: opt-in-product-update-low-risk
+      runner: review
+      inputs:
+        case_json: '{"id":"opt-in-product-update-low-risk","channel":"email","jurisdiction":"US","message":{"subject":"June workspace update for your team","body":"Your team enabled workspace updates. You can change settings or unsubscribe from product updates at any time.","claims":["New audit log filter"]},"sender":{"name":"Northstar Cloud","from_domain":"northstar.example","domain_alignment":"aligned","identity_disclosure":"clear"},"recipient":{"relationship":"customer_user","consent":"opt_in","source":"first_party_account_settings","last_engagement_days":18},"campaign":{"purpose":"product_update","commercial":false,"volume_per_day":120,"cadence_days":30},"controls":{"unsubscribe_link":true,"physical_address":true,"suppression_list":true,"rate_limit":true,"honors_reply_stop":true}}'
+        schema_json: '{"$id":"runx.spam_risk_review.result.v1"}'
+        minimum_confidence: 0.72
+      expect:
+        status: sealed
+        outputs:
+          spam_risk_review_result:
+            matches_packet: runx.spam_risk_review.result.v1
+        receipt:
+          schema: runx.receipt.v1
+    - name: scraped-cold-outreach-block
+      runner: review
+      inputs:
+        case_json: '{"id":"scraped-cold-outreach-block","channel":"email","jurisdiction":"US","message":{"subject":"Re: final notice about your listing","body":"I found your team on a public directory and this is the final notice before we mark your profile inactive. Reply YES for guaranteed ranking today.","claims":["guaranteed search ranking","final notice"]},"sender":{"name":"Directory Support","from_domain":"growth-mail.example","domain_alignment":"misaligned","identity_disclosure":"ambiguous"},"recipient":{"relationship":"no_prior_contact","consent":"none","source":"scraped_public_directory","last_engagement_days":null},"campaign":{"purpose":"sales","commercial":true,"volume_per_day":2400,"cadence_days":1},"controls":{"unsubscribe_link":false,"physical_address":false,"suppression_list":false,"rate_limit":false,"honors_reply_stop":false}}'
+        schema_json: '{"$id":"runx.spam_risk_review.result.v1"}'
+        minimum_confidence: 0.80
+      expect:
+        status: sealed
+        outputs:
+          spam_risk_review_result:
+            matches_packet: runx.spam_risk_review.result.v1
+        receipt:
+          schema: runx.receipt.v1
+    - name: missing-consent-newsletter-revise
+      runner: review
+      inputs:
+        case_json: '{"id":"missing-consent-newsletter-revise","channel":"email","jurisdiction":"US","message":{"subject":"Monthly operations digest","body":"This monthly digest includes operations posts and product notes. You can unsubscribe using the link below.","claims":["operations posts","product notes"]},"sender":{"name":"Ops Notes","from_domain":"ops-notes.example","domain_alignment":"aligned","identity_disclosure":"clear"},"recipient":{"relationship":"newsletter_import","consent":"unknown","source":"legacy_csv_import","last_engagement_days":540},"campaign":{"purpose":"newsletter","commercial":true,"volume_per_day":650,"cadence_days":30},"controls":{"unsubscribe_link":true,"physical_address":true,"suppression_list":true,"rate_limit":false,"honors_reply_stop":true}}'
+        schema_json: '{"$id":"runx.spam_risk_review.result.v1"}'
+        minimum_confidence: 0.74
+      expect:
+        status: sealed
+        outputs:
+          spam_risk_review_result:
+            matches_packet: runx.spam_risk_review.result.v1
+        receipt:
+          schema: runx.receipt.v1
+
+runners:
+  review:
+    default: true
+    type: graph
+    inputs:
+      case_path:
+        type: string
+        required: false
+        description: "Package-relative outbound campaign fixture JSON."
+      case_json:
+        type: string
+        required: false
+        description: "Inline outbound campaign JSON used by registry publish harnesses."
+      schema_path:
+        type: string
+        required: false
+        description: "Package-relative JSON Schema used as the output contract."
+      schema_json:
+        type: string
+        required: false
+        description: "Inline JSON Schema identity used by registry publish harnesses."
+      minimum_confidence:
+        type: number
+        required: false
+        default: 0.70
+        description: "Minimum confidence floor expected from the deterministic reviewer."
+    graph:
+      name: spam-risk-review
+      steps:
+        - id: review_campaign
+          tool: spam.risk_review
+          inputs:
+            case_path: "$input.case_path"
+            case_json: "$input.case_json"
+            schema_path: "$input.schema_path"
+            schema_json: "$input.schema_json"
+            minimum_confidence: "$input.minimum_confidence"

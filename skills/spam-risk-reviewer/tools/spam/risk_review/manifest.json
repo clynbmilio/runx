@@ -1,0 +1,64 @@
+{
+  "schema": "runx.tool.manifest.v1",
+  "name": "spam.risk_review",
+  "version": "0.1.0",
+  "description": "Review an outbound messaging fixture for spam risk and emit a deterministic risk packet.",
+  "source": {
+    "type": "cli-tool",
+    "command": "node",
+    "args": [
+      "./run.mjs"
+    ]
+  },
+  "inputs": {
+    "case_path": {
+      "type": "string",
+      "required": false,
+      "description": "Package-relative outbound campaign fixture JSON."
+    },
+    "case_json": {
+      "type": "string",
+      "required": false,
+      "description": "Inline outbound campaign fixture JSON."
+    },
+    "schema_path": {
+      "type": "string",
+      "required": false,
+      "description": "Package-relative output JSON Schema."
+    },
+    "schema_json": {
+      "type": "string",
+      "required": false,
+      "description": "Inline output JSON Schema identity."
+    },
+    "minimum_confidence": {
+      "type": "number",
+      "required": false,
+      "default": 0.7,
+      "description": "Minimum expected deterministic review confidence."
+    }
+  },
+  "scopes": [
+    "runx:fixture:read",
+    "runx:schema:read"
+  ],
+  "runx": {
+    "artifacts": {
+      "named_emits": {
+        "spam_risk_review_result": "runx.spam_risk_review.result.v1"
+      },
+      "wrap_as": "spam_risk_review_result"
+    }
+  },
+  "runtime": {
+    "command": "node",
+    "args": [
+      "./run.mjs"
+    ]
+  },
+  "output": {
+    "packet": "runx.spam_risk_review.result.v1",
+    "wrap_as": "spam_risk_review_result"
+  },
+  "toolkit_version": "0.1.4"
+}

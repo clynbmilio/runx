@@ -1,0 +1,39 @@
+{
+  "id": "scraped-cold-outreach-block",
+  "channel": "email",
+  "jurisdiction": "US",
+  "message": {
+    "subject": "Re: final notice about your listing",
+    "body": "I found your team on a public directory and this is the final notice before we mark your profile inactive. Reply YES and we will push your page to the top of search results today. This offer is guaranteed and expires in two hours.",
+    "claims": [
+      "guaranteed search ranking",
+      "final notice",
+      "profile inactive threat"
+    ]
+  },
+  "sender": {
+    "name": "Directory Support",
+    "from_domain": "growth-mail.example",
+    "domain_alignment": "misaligned",
+    "identity_disclosure": "ambiguous"
+  },
+  "recipient": {
+    "relationship": "no_prior_contact",
+    "consent": "none",
+    "source": "scraped_public_directory",
+    "last_engagement_days": null
+  },
+  "campaign": {
+    "purpose": "sales",
+    "commercial": true,
+    "volume_per_day": 2400,
+    "cadence_days": 1
+  },
+  "controls": {
+    "unsubscribe_link": false,
+    "physical_address": false,
+    "suppression_list": false,
+    "rate_limit": false,
+    "honors_reply_stop": false
+  }
+}

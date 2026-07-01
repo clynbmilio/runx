@@ -1,0 +1,38 @@
+{
+  "id": "opt-in-product-update-low-risk",
+  "channel": "email",
+  "jurisdiction": "US",
+  "message": {
+    "subject": "June workspace update for your team",
+    "body": "Hi Avery, your team enabled workspace updates last month. This note summarizes the new audit log filter, owner export, and billing-center reminder. You can change notification settings or unsubscribe from product updates at any time.",
+    "claims": [
+      "New audit log filter",
+      "Owner export available"
+    ]
+  },
+  "sender": {
+    "name": "Northstar Cloud",
+    "from_domain": "northstar.example",
+    "domain_alignment": "aligned",
+    "identity_disclosure": "clear"
+  },
+  "recipient": {
+    "relationship": "customer_user",
+    "consent": "opt_in",
+    "source": "first_party_account_settings",
+    "last_engagement_days": 18
+  },
+  "campaign": {
+    "purpose": "product_update",
+    "commercial": false,
+    "volume_per_day": 120,
+    "cadence_days": 30
+  },
+  "controls": {
+    "unsubscribe_link": true,
+    "physical_address": true,
+    "suppression_list": true,
+    "rate_limit": true,
+    "honors_reply_stop": true
+  }
+}

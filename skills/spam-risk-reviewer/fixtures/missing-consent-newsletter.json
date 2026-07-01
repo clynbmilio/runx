@@ -1,0 +1,38 @@
+{
+  "id": "missing-consent-newsletter-revise",
+  "channel": "email",
+  "jurisdiction": "US",
+  "message": {
+    "subject": "Monthly operations digest",
+    "body": "Hello, this monthly digest includes recent operations posts and product notes. You can unsubscribe from future emails using the link below.",
+    "claims": [
+      "operations posts",
+      "product notes"
+    ]
+  },
+  "sender": {
+    "name": "Ops Notes",
+    "from_domain": "ops-notes.example",
+    "domain_alignment": "aligned",
+    "identity_disclosure": "clear"
+  },
+  "recipient": {
+    "relationship": "newsletter_import",
+    "consent": "unknown",
+    "source": "legacy_csv_import",
+    "last_engagement_days": 540
+  },
+  "campaign": {
+    "purpose": "newsletter",
+    "commercial": true,
+    "volume_per_day": 650,
+    "cadence_days": 30
+  },
+  "controls": {
+    "unsubscribe_link": true,
+    "physical_address": true,
+    "suppression_list": true,
+    "rate_limit": false,
+    "honors_reply_stop": true
+  }
+}
